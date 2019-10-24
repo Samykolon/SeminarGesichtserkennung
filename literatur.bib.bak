@@ -55,7 +55,30 @@
   author    = {Asit Kumar Datta; Madhura Datta; Pradipta Kumar Banerjee},
 }
 
-@Misc{,
+@Misc{Viola01rapidobject,
+  author = {Paul Viola; Michael Jones},
+  title  = {{Rapid object detection using a boosted cascade of simple features}},
+  year   = {2001},
+}
+
+@Article{SocialProfiling,
+  author  = {{Muhammad Bilal; Abdullah Gani; Muhammad Ikram Ullah Lali; Mohsen Marjani; Nadia Malik}},
+  title   = {{Social Profiling: A Review, Taxonomy, and Challenges}},
+  journal = {Cyberpsychology, Behavior and Social Networking, Vol. 22, No. 7},
+  year    = {2019},
+}
+
+@Misc{FBI,
+  title        = {{Next Generation Identification (NGI)}},
+  howpublished = {{\url{https://www.fbi.gov/services/cjis/fingerprints-and-other-biometrics/ngi}}},
+  note         = {Zuletzt besucht: 23.10.2019},
+}
+
+@Book{China,
+  title     = {{China's Golden Shield: Corporations and the Development of Surveillance Technology in the People's Republic of China}},
+  publisher = {{Rights and Democracy}},
+  year      = {2001},
+  author    = {Greg Walton},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
