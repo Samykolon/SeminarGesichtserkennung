@@ -22,9 +22,30 @@
 \section{Einleitung}
 \section{Grundlagen}
 Einführend zum besseren Verständnis des Themenkomplexes ist es wichtig, einige wesentliche Begriffe zu definieren und außerdem voneinander abzugrenzen. Zunächst gilt es, zwischen der Lokalisation eines Gesichtes an sich und der Zuordnung des Gesichts zu einer bestimmten Person zu unterscheiden. Im ersten Fall wird geprüft, ob und wo ein Gesicht zu sehen ist, im zweiten, um wen es sich handelt \cite{FaceRecognitionWikipedia}. Wir sprechen somit zum einen von der Gesichtserkennung und zum anderen von der Gesichtsidentifizierung. Im englischen Sprachgebrauch unterteilt man den Teil der Gesichtsidentifizierung zusätzlich noch in eine menschliche Erkennung (\textit{face perception}) und in eine maschinelle Erkennung (\textit{face recognition}). In dieser Arbeit wird sich jedoch lediglich auf die maschinelle Gesichtsidentifizierung beschränkt.
+
 \section{Gesichtserkennung (Face Detection)}
-\section{Gesichtsidentifizierung (Face Recognition)}
-Das Gebiet der Gesichtsidentifizierung umfasst alle Methoden und Techniken, mit der es möglich ist, basierend auf visuellen Material Menschen eindeutig zu identifizieren. Die Gesichtsidentifizierung baut dabei auf der Gesichtserkennung auf. Insbesondere in den letzten Jahren wurden nach und nach zahlreichen Algorithmen und Methodiken entwickelt, um Gesichter maschinell zu identifizieren. Insbesondere im Hinblick auf die Automatisierung der Gesichtsidentifizierung stellt erst das Jahr 1973 den Startpunkt dar, als Takeo Kanade in seiner Dissertation das erste automatisierte System zur Gesichtsidentifizierung vorstellte \cite{Takeo}. Jedoch konnte grade aufgrund der begrenzten Rechenleistung zu dieser Zeit dieses System noch längst nicht effizient arbeiten. Ein wesentlicher Fortschritt wurde erst im Jahr 1990 durch die Forscher Kirby und Sirovich erzielt, welche die Hauptkomponentenanalyse (Karhunen-Loève-Transformation) verwendeten \cite{Kirby}. Hierbei wird eine Vielzahl von generierten Variablen auf eine geringe Zahl aussagekräftiger Parameter reduziert. Dadurch wird gleichzeitig auch die Komplexität und der Rechenaufwand verringert. Weiterhin stellte die Arbeit von Matthew Turk und Alex Pentland einen weiteren Meilenstein dar, welche sogenannte Eigengesichter (Eigenvektoren) zur Gesichtsidentifizierung nutzten \cite{Turk}. Diese Techniken werden auch noch in den derzeitigen State of the Art Methoden genutzt.
+
+Verschiedene Methoden können verwendet werden, um zu entscheiden, ob ein Bild ein Gesicht enthält. Die Möglichkeiten beinhalten u. a. neuronale Netze, genetische Algorithmen oder speziell für das Problem entwickelte Lösungsansätze. Die Gesichtserkennung ist ein rechnerisch einfacheres Problem als die in Kapitel \ref{identifizierung} behandelte Gesichtsidentifizierung, allerdings besteht beispielsweise bei Fotokameras der Wunsch, auf wenig leistungsfähigen Prozessoren die Aufgabe in Echtzeit durchzuführen, um einen schnellen Fokus auf die Gesichter zu ermöglichen. Dieser Anwendungsfall erfordert einen möglichst effizienten Algorithmus.  
+
+Der folgende Abschnitt soll einen kurzen Abriss über die verschiedenen Möglichkeiten der Gesichtserkennung geben und exemplarisch einen besonders effizienten Vertreter, den 2001 von Viola und Jones veröffentlichten Viola-Jones-Algorithmus, im Detail vorstellen \cite{Viola01rapidobject}.
+
+\subsection{Genetische Algorithmen}
+
+\subsection{Neuronale Netzwerke}
+
+\subsection{Viola-Jones-Algorithmus}
+Der Viola-Jones-Algorithmus ist ein häufig zur Gesichtserkennung eingesetzter Algorithmus. Er verarbeitet in Graustufen umgewandelte Bildausschnitte und nutzt sogenannte \textit{Haar-Features}, schwarz-weiße Rechteckskonfigurationen, um in den Ausschnitten Gesichter zu identifizieren. Diesen Prozess optimiert er mithilfe von verschiedenen Techniken, z. B. den des Integralbilds und einer Attention-Kaskade. Das Resultat ist ein effizienter Algorithmus, der sich auch von schwachen Rechnern in Echtzeit berechnen lässt.
+
+\subsubsection{Vorverarbeitung}
+\subsubsection{Haar-Features}
+\subsubsection{Integralbilder}
+\subsubsection{Feature-Auswahl}
+\subsubsection{Kaskade}
+\subsubsection{Nachverarbeitung}
+
+
+\section{Gesichtsidentifizierung (Face Recognition)}\label{identifizierung}
+Das Gebiet der Gesichtsidentifizierung umfasst alle Methoden und Techniken, mit der es möglich ist, basierend auf visuellen Material Menschen eindeutig zu identifizieren. Die Gesichtsidentifizierung baut dabei auf der Gesichtserkennung auf. Insbesondere in den letzten Jahren wurden nach und nach zahlreichen Algorithmen und Methodiken entwickelt, um Gesichter maschinell zu identifizieren. Insbesondere im Hinblick auf die Automatisierung der Gesichtsidentifizierung stellt erst das Jahr 1973 den Startpunkt dar, als Takeo Kanade in seiner Dissertation das erste automatisierte System zur Gesichtsidentifizierung vorstellte \cite{Takeo}. Jedoch konnte grade aufgrund der begrenzten Rechenleistung zu dieser Zeit dieses System noch längst nicht effizient arbeiten. Ein wesentlicher Fortschritt wurde erst im Jahr 1990 durch die Forscher Kirby und Sirovich erzielt, welche die Hauptkomponentenanalyse (Karhunen-Loève-Transformation) verwendeten \cite{Kirby}. Hierbei wird eine Vielzahl von generierten Variablen auf eine geringe Zahl aussagekräftiger Parameter reduziert. Dadurch wird gleichzeitig auch die Komplexität und der Rechenaufwand verringert. Weiterhin stellte die Arbeit von Matthew Turk und Alex Pentland einen weiteren Meilenstein dar, welche sogenannte Eigengesichter (Eigenvektoren) zur Gesichtsidentifizierung nutzten \cite{Turk}. Diese Techniken werden auch noch in den derzeitigen State-of-the-Art-Methoden genutzt.
 \\\\Im Folgenden soll auf eine Reihe dieser Methoden und Herangehensweisen eingegangen, einige Anwendungsbeispiele genannt und die Problematiken der Gesichtsidentifzierung thematisiert werden.
 \subsection{Methoden der Gesichtserkennung}
 Grundlegend können alle Methoden der Gesichtsidentifizierung in zwei wesentliche Schritte eingeteilt werden. Der erste Schritt ist die Extraktion und Selektion von Merkmalen aus dem visuellen Input; der zweite Schritt stellt die Klassifizierung der Merkmale dar \cite{FRS}. Desweiteren können Techniken zur Gesichtsidentifizierung in die Art der verwendeten Merkmale unterteilt werden. Diese können entweder geometrische Features sein (Form der Augen, Position der Nase, ...) oder fotometrische Features sein (Texturen, Farbwerte, ...).
