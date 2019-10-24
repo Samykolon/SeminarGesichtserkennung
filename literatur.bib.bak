@@ -48,4 +48,14 @@
   note         = {Zuletzt besucht: 23.10.2019},
 }
 
+@Book{MainBook,
+  title     = {{Face Detection and Recognition - Theory and Practice}},
+  publisher = {CRC Press - Taylor \& Francis Group},
+  year      = {2016},
+  author    = {Asit Kumar Datta; Madhura Datta; Pradipta Kumar Banerjee},
+}
+
+@Misc{,
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
