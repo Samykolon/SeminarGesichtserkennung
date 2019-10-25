@@ -34,10 +34,26 @@ Der folgende Abschnitt soll einen kurzen Abriss über die verschiedenen Möglich
 \subsection{Neuronale Netzwerke}
 
 \subsection{Viola-Jones-Algorithmus}
-Der Viola-Jones-Algorithmus ist ein häufig zur Gesichtserkennung eingesetzter Algorithmus. Er verarbeitet in Graustufen umgewandelte Bildausschnitte und nutzt sogenannte \textit{Haar-Features}, schwarz-weiße Rechteckskonfigurationen, um in den Ausschnitten Gesichter zu identifizieren. Diesen Prozess optimiert er mithilfe von verschiedenen Techniken, z. B. den des Integralbilds und einer Attention-Kaskade. Das Resultat ist ein effizienter Algorithmus, der sich auch von schwachen Rechnern in Echtzeit berechnen lässt.
+Der Viola-Jones-Algorithmus ist ein häufig zur Gesichtserkennung eingesetzter Algorithmus. Er verarbeitet in Graustufen umgewandelte Bildausschnitte und nutzt sogenannte \textit{Haar-like-Features}, schwarz-weiße Rechteckanordnungen, um in den Ausschnitten Gesichter zu identifizieren. Diesen Prozess optimiert er mithilfe von verschiedenen Techniken, z. B. den des Integralbilds und einer Attention-Kaskade. Das Resultat ist ein effizienter Algorithmus, der sich auch von schwachen Rechnern in Echtzeit berechnen lässt.
 
 \subsubsection{Vorverarbeitung}
-\subsubsection{Haar-Features}
+Der Viola-Jones-Algorithmus operiert ausschließlich auf der Grundlage von Graustufenbildern, weshalb der er im ersten Schritt Farbbilder in diese umwandelt.
+
+Der zweite Schritt dient dazu, die Geschwindigkeit des Algorithmus zu erhöhen. Ein Bild, das weniger Pixel enthält, kann schneller verarbeitet werden, weshalb das Herunterskalieren des Bildes die Performance erhöht. Sehr kleine Gesichter können durch die Reduktion der Auflösung verloren gehen, aber in Anwendungsfällen, wo dies akzeptabel ist, ist der Schritt sinnvoll.
+
+Der dritte Schritt besteht darin, iterativ alle möglichen Bildausschnitte auszuwählen, die ein Gesicht enthalten könnten und demzufolge von einem Gesichtserkennungs-Unteralgorithmus darauf überprüft werden sollen. Es ist beispielsweise möglich, dass das gegebene Bild eine einzige Großaufnahme eines Gesichts ist, der gesuchte Bildausschnitt betrifft hier das ganze Bild. In anderen Fällen enthält ein Bild viele kleine Gesichter: Um diese zu finden, muss der Algorithmus alle Bildausschnitte, die so groß sind wie die gesuchten Gesichter, überprüfen. Letztendlich überprüft der Algorithmus sehr viele Bildausschnitte verschiedener Größe.
+
+\subsubsection{Haar-like-Features}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\linewidth]{images/haarfeatures}
+	\caption[Haar-like-Features]{Mehrere mögliche Haar-like-Features}
+	\label{fig:haarfeatures}
+\end{figure}
+
+
+Ein Haar-like-Feature besteht aus mehreren schwarzen oder weißen Rechtecken und hat das Ziel, markante dunkle bzw. helle Teile eines Gesichts abstrakt abzubilden.
+
 \subsubsection{Integralbilder}
 \subsubsection{Feature-Auswahl}
 \subsubsection{Kaskade}
