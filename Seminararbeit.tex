@@ -22,7 +22,7 @@
 \section{Einleitung}
 \section{Grundlagen}
 Einführend zum besseren Verständnis des Themenkomplexes ist es wichtig, einige wesentliche Begriffe zu definieren und außerdem voneinander abzugrenzen. Zunächst gilt es, zwischen der Lokalisation eines Gesichtes an sich und der Zuordnung des Gesichts zu einer bestimmten Person zu unterscheiden. Im ersten Fall wird geprüft, ob und wo ein Gesicht zu sehen ist, im zweiten, um wen es sich handelt \cite{FaceRecognitionWikipedia}. Wir sprechen somit zum einen von der Gesichtserkennung und zum anderen von der Gesichtsidentifizierung. Im englischen Sprachgebrauch unterteilt man den Teil der Gesichtsidentifizierung zusätzlich noch in eine menschliche Erkennung (\textit{face perception}) und in eine maschinelle Erkennung (\textit{face recognition}). In dieser Arbeit wird sich jedoch lediglich auf die maschinelle Gesichtsidentifizierung beschränkt.
-
+\newpage
 \section{Gesichtserkennung (Face Detection)}
 
 Verschiedene Methoden können verwendet werden, um zu entscheiden, ob ein Bild ein Gesicht enthält. Die Möglichkeiten beinhalten u. a. neuronale Netze, genetische Algorithmen oder speziell für das Problem entwickelte Lösungsansätze. Die Gesichtserkennung ist ein rechnerisch einfacheres Problem als die in Kapitel \ref{identifizierung} behandelte Gesichtsidentifizierung, allerdings besteht beispielsweise bei Fotokameras der Wunsch, auf wenig leistungsfähigen Prozessoren die Aufgabe in Echtzeit durchzuführen, um einen schnellen Fokus auf die Gesichter zu ermöglichen. Dieser Anwendungsfall erfordert einen möglichst effizienten Algorithmus.  
@@ -41,7 +41,7 @@ Der Viola-Jones-Algorithmus operiert ausschließlich auf der Grundlage von Graus
 
 Der zweite Schritt dient dazu, die Geschwindigkeit des Algorithmus zu erhöhen. Ein Bild, das weniger Pixel enthält, kann schneller verarbeitet werden, weshalb das Herunterskalieren des Bildes die Performance erhöht. Sehr kleine Gesichter können durch die Reduktion der Auflösung verloren gehen, aber in Anwendungsfällen, wo dies akzeptabel ist, ist der Schritt sinnvoll.
 
-Der dritte Schritt besteht darin, iterativ alle möglichen Bildausschnitte auszuwählen, die ein Gesicht enthalten könnten und demzufolge von einem Gesichtserkennungs-Unteralgorithmus darauf überprüft werden sollen. Es ist beispielsweise möglich, dass das gegebene Bild eine einzige Großaufnahme eines Gesichts ist, der gesuchte Bildausschnitt betrifft hier das ganze Bild. In anderen Fällen enthält ein Bild viele kleine Gesichter: Um diese zu finden, muss der Algorithmus alle Bildausschnitte, die so groß sind wie die gesuchten Gesichter, überprüfen. Letztendlich überprüft der Algorithmus sehr viele Bildausschnitte verschiedener Größe.
+Der dritte Schritt besteht darin, iterativ alle möglichen Bildausschnitte auszuwählen, die ein Gesicht enthalten könnten und demzufolge von einem Gesichtserkennungs-Unteralgorithmus darauf überprüft werden sollen. Es ist beispielsweise möglich, dass das gegebene Bild eine einzige Großaufnahme eines Gesichts ist, der gesuchte Bildausschnitt betrifft hier das ganze Bild. In anderen Fällen enthält ein Bild viele kleine Gesichter: Um diese zu finden, muss der Algorithmus alle Bildausschnitte, die so groß sind wie die gesuchten Gesichter, überprüfen. Letztendlich überprüft der Algorithmus alle Bildausschnitte vorher festgelegter Größen, die von sehr groß bis klein variieren.
 
 \subsubsection{Haar-like-Features}
 \begin{figure}
@@ -52,14 +52,44 @@ Der dritte Schritt besteht darin, iterativ alle möglichen Bildausschnitte auszu
 \end{figure}
 
 
-Ein Haar-like-Feature besteht aus mehreren schwarzen oder weißen Rechtecken und hat das Ziel, markante dunkle bzw. helle Teile eines Gesichts abstrakt abzubilden.
+Ein Haar-like-Feature besteht aus mehreren schwarzen oder weißen Rechtecken und hat das Ziel, markante dunkle bzw. helle Teile eines Gesichts abstrakt abzubilden. Der Wert eines solchen Features beschreibt, wie gut es auf einen Teil eines Graustufenbildes passt.
+
+Ein Feature, das aus einem schwarzen Rechteck über einem weißen Rechteck besteht, wird einen hohen Wert haben, wenn das schwarze Rechteck über die Augenpartie und das weiße über Nase und Wangen gelegt wird (siehe Abbildung \ref{fig:haarfeatures2}). Bei Teilen des Bildes, die kein Gesicht enthalten, ist dies selten der Fall. Bei einem Bildausschnitt, bei dem viele - für die Gesichtserkennung ausgewählte - Features hohe Werte aufweisen, handelt es sich wahrscheinlich um ein Gesicht.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/haarfeatures2}
+	\caption[Haar-like-Features - Beispiel]{Zwei Haar-like-Features, die ein Gesicht sehr gut beschreiben.}
+	\label{fig:haarfeatures2}
+\end{figure}
+
+Der Wert eines solchen Features berechnet sich aus der Summe der Helligkeitswerte der Pixel unter dem schwarzen Rechteck(en), von denen die Summe der Helligkeitswerte unter den weißen Rechteck(en) abgezogen wird. Ein weißes Pixel hat einen Helligkeitswert von 0, ein schwarzes Pixel entspricht dem Wert 255. Ein Feature erreicht dementsprechend seinen Maximalwert, wenn unter seinen weißen Rechtecken nur weiße Pixel und unter seinen schwarzen Rechtecken nur schwarze Pixel liegen.
 
 \subsubsection{Integralbilder}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/integral}
+	\caption[Integralbild]{Eine Illustration eines Integralbildes}
+	\label{fig:integral}
+\end{figure}
+
+
+Während des Viola-Jones-Algorithmus müssen die Werte von sehr vielen Haar-like-Features berechnet werden. Eine einfache Implementierung für die Berechnung des Werts eines weißen oder schwarzen Rechtecks bestünde aus einer doppelten For-Schleife, die zwischen den Grenzen der x- bzw. y-Achse iteriert und alle Pixelwerte aufaddiert. Ein Rechteck der Dimension 10x10 würde somit 100 Additionen erfordern.
+
+Viola und Jones entwickelten in \cite{Viola01rapidobject} das Konzept des Integralbilds, das es ermöglicht, die Anzahl der Rechenoperationen stark zu reduzieren. Das Integralbild ist eine Matrix, die an der Position jedes Pixels des Bildes nicht den Wert des Pixels, sondern die Summe aller Pixelwerte speichert, die links oberhalb des Pixels liegen. Abbildung \ref{fig:integral} verdeutlicht dies: Der Eintrag an Position 1 speichert z. B. die Summe der Pixel der Fläche A.
+
+Das Integralbild ermöglicht es, die Summe der Pixel in einem beliebigen Rechteck nur durch 4 Rechenoperationen zu ermitteln.
+
 \subsubsection{Feature-Auswahl}
+
 \subsubsection{Kaskade}
+
 \subsubsection{Nachverarbeitung}
 
+\subsubsection{Verwendung des Algorithmus unter Nutzung von OpenCV}
 
+\newpage
 \section{Gesichtsidentifizierung (Face Recognition)}
 \label{identifizierung}
 Das Gebiet der Gesichtsidentifizierung umfasst alle Methoden und Techniken, mit der es möglich ist, basierend auf visuellen Material Menschen eindeutig zu identifizieren. Die Gesichtsidentifizierung baut dabei auf der Gesichtserkennung auf. Insbesondere in den letzten Jahren wurden nach und nach zahlreichen Algorithmen und Methodiken entwickelt, um Gesichter maschinell zu identifizieren. Insbesondere im Hinblick auf die Automatisierung der Gesichtsidentifizierung stellt erst das Jahr 1973 den Startpunkt dar, als Takeo Kanade in seiner Dissertation das erste automatisierte System zur Gesichtsidentifizierung vorstellte \cite{Takeo}. Jedoch konnte grade aufgrund der begrenzten Rechenleistung zu dieser Zeit dieses System noch längst nicht effizient arbeiten. Ein wesentlicher Fortschritt wurde erst im Jahr 1990 durch die Forscher Kirby und Sirovich erzielt, welche die Hauptkomponentenanalyse (Karhunen-Loève-Transformation) verwendeten \cite{Kirby}. Hierbei wird eine Vielzahl von generierten Variablen auf eine geringe Zahl aussagekräftiger Parameter reduziert. Dadurch wird gleichzeitig auch die Komplexität und der Rechenaufwand verringert. Weiterhin stellte die Arbeit von Matthew Turk und Alex Pentland einen weiteren Meilenstein dar, welche sogenannte Eigengesichter (Eigenvektoren) zur Gesichtsidentifizierung nutzten \cite{Turk}. Diese Techniken werden auch noch in den derzeitigen State-of-the-Art-Methoden genutzt.
