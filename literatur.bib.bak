@@ -81,4 +81,24 @@
   author    = {Greg Walton},
 }
 
+@Article{DeepFace,
+  author  = {Yaniv Taigman; Ming Yang; Marc Aurelio Ranzato; Lior Wolf},
+  title   = {{DeepFace: Closing the Gap to Human-Level Performance in Face Verification}},
+  journal = {{Conference on Computer Vision and Pattern Recognition (CVPR)}},
+  year    = {2014},
+}
+
+@InProceedings{Li_2015_CVPR,
+	author = {Li, Haoxiang and Lin, Zhe and Shen, Xiaohui and Brandt, Jonathan and Hua, Gang},
+	title = {A Convolutional Neural Network Cascade for Face Detection},
+	booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+	month = {June},
+	year = {2015}
+}
+
+@Article{Thermal,
+  author = {Mrinal Kanti Bhowmik; Kankan Saha; Sharmistha Majumder; Goutam Majumder; Ashim Saha; Aniruddha Nath Sarma; Debotosh Bhattacharjee; Dipak Kumar Basu; Mita Nasipuri},
+  title  = {{Thermal Infrared Face Recognition – A Biometric Identification Technique for Robust Security system}},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
