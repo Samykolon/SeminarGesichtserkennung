@@ -47,7 +47,7 @@ Der dritte Schritt besteht darin, iterativ alle möglichen Bildausschnitte auszu
 \begin{figure}
 	\centering
 	\includegraphics[width=0.4\linewidth]{images/haarfeatures}
-	\caption[Haar-like-Features]{Mehrere mögliche Haar-like-Features}
+	\caption[Haar-like-Features]{Mehrere mögliche Haar-like-Features. Quelle: \cite{Viola01rapidobject}}
 	\label{fig:haarfeatures}
 \end{figure}
 
@@ -59,7 +59,7 @@ Ein Feature, das aus einem schwarzen Rechteck über einem weißen Rechteck beste
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{images/haarfeatures2}
-	\caption[Haar-like-Features - Beispiel]{Zwei Haar-like-Features, die ein Gesicht sehr gut beschreiben.}
+	\caption[Haar-like-Features - Beispiel]{Zwei Haar-like-Features, die ein Gesicht sehr gut beschreiben. Quelle: \cite{Viola01rapidobject}}
 	\label{fig:haarfeatures2}
 \end{figure}
 
@@ -70,24 +70,43 @@ Der Wert eines solchen Features berechnet sich aus der Summe der Helligkeitswert
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{images/integral}
-	\caption[Integralbild]{Eine Illustration eines Integralbildes}
+	\caption[Integralbild]{Eine Illustration eines Integralbildes. Quelle: \cite{Viola01rapidobject}}
 	\label{fig:integral}
 \end{figure}
 
 
-Während des Viola-Jones-Algorithmus müssen die Werte von sehr vielen Haar-like-Features berechnet werden. Eine einfache Implementierung für die Berechnung des Werts eines weißen oder schwarzen Rechtecks bestünde aus einer doppelten For-Schleife, die zwischen den Grenzen der x- bzw. y-Achse iteriert und alle Pixelwerte aufaddiert. Ein Rechteck der Dimension 10x10 würde somit 100 Additionen erfordern.
+Während des Viola-Jones-Algorithmus müssen die Werte von sehr vielen Haar-like-Features berechnet werden. Eine einfache Implementierung für die Berechnung des Werts eines weißen oder schwarzen Rechtecks bestünde aus einer doppelten For-Schleife, die zwischen den Grenzen der x- bzw. y-Achse iteriert und alle Pixelwerte aufaddiert. Ein Rechteck der Dimension 10x10 würde somit 99 Additionen erfordern.
 
 Viola und Jones entwickelten in \cite{Viola01rapidobject} das Konzept des Integralbilds, das es ermöglicht, die Anzahl der Rechenoperationen stark zu reduzieren. Das Integralbild ist eine Matrix, die an der Position jedes Pixels des Bildes nicht den Wert des Pixels, sondern die Summe aller Pixelwerte speichert, die links oberhalb des Pixels liegen. Abbildung \ref{fig:integral} verdeutlicht dies: Der Eintrag an Position 1 speichert z. B. die Summe der Pixel der Fläche A.
 
-Das Integralbild ermöglicht es, die Summe der Pixel in einem beliebigen Rechteck nur durch 4 Rechenoperationen zu ermitteln.
+Das Integralbild ermöglicht es, die Summe der Pixel in einem beliebigen Rechteck nur durch 3 Rechenoperationen zu ermitteln. Die Abbildung verdeutlicht dies: Der Eintrag an Position 4 speichert die Summe der Pixel der Flächen A + B + C + D. Wenn wir die Summe der Pixel der Fläche D ermitteln möchten, können wir von dem Wert die Einträge 2 (entspricht d. Summe von A + B) und 3 (entspricht d. Summe von A + C) subtrahieren. Zuletzt müssen wir lediglich den Flächeninhalt von A - gespeichert in Matrixeintrag 1 - wieder addieren, da er im vorherigen Schritt doppelt subtrahiert wurde. 
+
+Der Algorithmus berechnet das Integralbild einmal pro Bild und kann es dann für jedes Haar-like-Feature in jedem Bildausschnitt wiederverwenden.
 
 \subsubsection{Feature-Auswahl}
+Viola und Jones verwenden in ihrer Implementierung Bildausschnitte der Größe 24 x 24 Pixel \cite{Viola01rapidobject}. Schon bei dieser relative geringen Auflösung existieren über 160000 verschiedene mögliche Features. Mithilfe einer Gesichtsdatenbank kann ein Brute-Force-Algorithmus bestimmen, welche dieser Features Gesichter am besten von anderen Objekten unterscheiden können. Die Features mit den höchsten Klassifizierungsgenauigkeiten zeigt Abbildung \ref{fig:haarfeatures2}. Dennoch haben auch sie eine Fehlerrate von über 10 Prozent. Um hohe Genauigkeiten zu erreichen, müssen mehrere Features kombiniert werden.
+
+Ein einfacher Ansatz wäre es, für die Klassifizierung die Werte der \textit{n} besten Features für jeden Bildausschnitt zu berechnen. Dies führt jedoch nicht zu optimalen Ergebnissen, da z. B. die Kombination zweier sehr ähnlicher Features, die in den gleichen Fällen ein vorhandenes Gesicht nicht erkennen, zu keiner Verbesserung führt. Viola und Jones haben sich hier für den AdaBoost-Algorithmus für die Featureauswahl entschieden. Dieser wählt Features sukzessive aus und bevorzugt dabei Features, die Gesichter korrekt klassifizieren, welche von den bisher ausgewählten Features falsch klassifiziert werden.
 
 \subsubsection{Kaskade}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/cascade}
+	\caption[Kaskade]{Eine sogenannte Kaskade, ein Entscheidungsbaum, der Bildausschnitte ohne Gesicht schnell aussortieren soll. Quelle: \cite{Viola01rapidobject}}
+	\label{fig:cascade}
+\end{figure}
+
+
+Von allen Bildausschnitten, die der Algorithmus auf ein vorhandenes Gesicht prüft, enthalten die meisten keine Gesichter. Um endgültig zu mit hoher Genauigkeit verifizieren, ob ein Ausschnitt ein Gesicht enthält, benötigt der Algorithmus Tausende Features.
+
+Damit er nicht alle Features berechnen muss, um offensichtliche Ausschnitte ohne Gesicht auszusortieren, verwenden Viola und Jones eine sogenannte \textit{Kaskade} \cite{Viola01rapidobject}. Dieser Ansatz verbessert die Performance erheblich und wird in neueren Arbeiten auch bei der Gesichtserkennung ohne Haar-like-Features verwendet \cite{Li_2015_CVPR}.
+
+Eine Kaskade besteht aus mehreren Stufen: Jeder Bildausschnitt muss alle Stufen klassifizieren, um als Gesicht erkannt zu werden. Wenn eine Stufe erkennt, dass ein Ausschnitt sicher kein Gesicht ist, wird dieser aussortiert. Viola und Jones setzten in ihrer Implementierung eine erste Stufe ein, die nur aus zwei Features besteht und 100 Prozent aller Gesichter durchlässt, aber in der Lage ist, 60 Prozent aller Nicht-Gesichter auszusortieren.
 
 \subsubsection{Nachverarbeitung}
 
 \subsubsection{Verwendung des Algorithmus unter Nutzung von OpenCV}
+Es ist nicht einfach, einen effizienten Viola-Jones-Algorithmus zu implementieren. Dazu sollte der Programmierer nicht nur den Algorithmus verstehen, sondern auch Technologien wie SIMD oder CUDA. 
 
 \newpage
 \section{Gesichtsidentifizierung (Face Recognition)}
