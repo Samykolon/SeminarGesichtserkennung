@@ -6,6 +6,29 @@
 \usepackage{subcaption}
 \usepackage{booktabs}
 \usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=C++,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3
+}
 \captionsetup{compatibility=false}
 \bibliographystyle{unsrt}
 \TUBAFFakultaet{Fakultät für Maschinenbau, Verfahrens- und Energietechnik}
@@ -105,8 +128,25 @@ Eine Kaskade besteht aus mehreren Stufen: Jeder Bildausschnitt muss alle Stufen 
 
 \subsubsection{Nachverarbeitung}
 
+Falls das Bild ein Gesicht enthält, werden einige der Bildausschnitte die Kaskade vollständig durchlaufen und als Gesicht erkannt. Häufig erkennt der Algorithmus mehrere sich stark überschneidende Ausschnitte als zwei separate Gesichter. Der letzte Schritt besteht darin, diese wieder zusammenzuführen.
+
 \subsubsection{Verwendung des Algorithmus unter Nutzung von OpenCV}
-Es ist nicht einfach, einen effizienten Viola-Jones-Algorithmus zu implementieren. Dazu sollte der Programmierer nicht nur den Algorithmus verstehen, sondern auch Technologien wie SIMD oder CUDA. 
+Es ist nicht einfach, einen effizienten Viola-Jones-Algorithmus zu implementieren. Dazu sollte der Programmierer nicht nur den Algorithmus verstehen, sondern auch Technologien wie SIMD oder CUDA. Für Entwickler, die lediglich an den Resultaten des Algorithmus interessiert sind, bietet sich die Verwendung einer schon vorhandenen Implementierung an.
+
+Eine Bibliothek, die den Algorithmus implementiert, ist OpenCV \cite{opencv_library}. Optional bietet sie CUDA-Unterstützung an, wobei der Großteil des Algorithmus auf der Grafikkarte und nicht auf dem CPU abläuft.
+
+OpenCV erfordert nur wenige Schritte für die Ausführung des Viola-Jones-Algorithmus. Die Bibliothek stellt vorgefertigte Kaskaden in der Form von XML-Dateien zur Verfügung und implementiert den Algorithmus in nur einer Funktion. Der folgende Codeblock zeigt in leicht gekürzter Form die Anwendung der Bibliothek.
+
+\begin{lstlisting}
+CascadeClassifier face_cascade; //Initialisiert ueber XML-Datei
+Mat picture; //Bild, in dem Gesichter erkannt werden sollen. (Initialisiert in nicht gezeigtem Code.)
+Mat picture_gray;
+
+cvtColor(picture, picture_gray, COLOR_BGR2GRAY); //Wandle Bild in Graustufen um
+std::vector<Rect> faces;
+face_cascade.detectMultiScale(frame_gray, faces); //Fuehrt den Viola-Jones-Algorithmus aus und speichert die Resultate in der Variable "faces"
+\end{lstlisting}
+
 
 \section{Gesichtsidentifizierung (Face Recognition)}
 \label{identifizierung}
